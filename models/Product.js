@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const Schema=mongoose.Schema;
-const ProductSchema = new Schema({
+const ProductSchema = new mongoose.Schema({
   userId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   name: {
@@ -24,17 +23,23 @@ const ProductSchema = new Schema({
   brand: {
     type: String,
   },
+  thumbnail: {
+    type: String,
+  },
+  images: {
+    type: [String],
+  },
   quantity: {
     type: Number,
     required: true,
   },
   created: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   updated: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

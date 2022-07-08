@@ -1,33 +1,34 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
+const auth = require("../middleware/authorization");
 const { check, validationResult } = require("express-validator");
 const Product = require("../models/Product");
 
 router.get("/", async (req, res) => {
-    try {
-      const products = await Product.find();
-      res.json(products);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Server error");
-    }
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
 });
 
 router.get("/:id", async (req, res) => {
-    try {
-      const product = await Product.findById(req.params.id);
-      if(!product) {
-          return res.status(400).json({msg:'Product not found'});
-      }
-      res.json(product);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).send("Server error");
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(400).json({ msg: "Product not found" });
     }
+    res.json(product);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
 });
 
-router.post("/",
+router.post(
+  "/",
   [
     auth,
     [
@@ -62,5 +63,15 @@ router.post("/",
     }
   }
 );
+
+router.get("/instructors/:id", auth, async (req, res) => {
+  try {
+    const products = await Product.find({ userId: req.params.id });
+    res.json(products);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;
