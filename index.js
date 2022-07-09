@@ -1,31 +1,19 @@
 const express = require("express");
 const app = express();
-const connectDB = require("./config/db");
 const cors = require("cors");
 require("dotenv").config();
 const Bid=require("./models/bidModel");
-const morgan = require("morgan");
-
-const PORT = process.env.PORT || 8000;
-const userApiRoutes = require("./routes/userApi");
-const productsApiRoutes = require("./routes/productsApi");
-const authApiRoutes = require("./routes/authApi");
-const profileApiRoutes = require("./routes/profileApi");
-const cartApiRoutes = require("./routes/cartApi");
-const paymentApiRoutes = require("./routes/paymentApi");
-
-app.use(morgan("dev"));
+const connectDB = require("./config/db");
+const port = process.env.PORT || 5000;
 
 connectDB();
 
 app.use(cors());
 app.use(express.json({ extended: false }));
-app.use("/api/users", userApiRoutes);
-app.use("/api/products", productsApiRoutes);
-app.use("/api/auth", authApiRoutes);
-app.use("/api/profile", profileApiRoutes);
-app.use("/api/cart", cartApiRoutes);
-app.use("/api/payment", paymentApiRoutes);
+
+app.get("/api", (req, res) => {
+  res.json({ message: "hello" });
+});
 
 app.post("/api/createbid",async(req,res)=>{
   const {itemid,name,price} = req.body;
@@ -40,14 +28,9 @@ app.get("/api/leaderboard",async(req,res)=>{
   res.json(bid);
 });
 
-app.get("/", (req, res) => {
-  res.send("Default route up!");
+const server = app.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
-
-const server = app.listen(PORT, () => {
-  console.log(`Socket.IO server running at http://localhost:${PORT}/`);
-});
-
 
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
